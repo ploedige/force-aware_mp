@@ -4,3 +4,6 @@
 [submodule "MP_PyTorch"]
 	path = MP_PyTorch
 	url = git@github.com:ploedige/MP_PyTorch.git
+[submodule "related_repos/palrymetis"]
+	path = related_repos/palrymetis
+	url = https://github.com/gnoLLex/palrymetis.git
