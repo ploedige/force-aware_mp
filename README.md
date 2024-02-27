@@ -1,2 +1,19 @@
-# force-aware_mp
-Force-Aware Movement Primitives
+# Force-Aware Movement Primitives
+
+## Installation
+### Prerequisites
+  - [Anaconda](https://www.anaconda.com) or [Miniconda](https://docs.anaconda.com/free/miniconda/) installed
+  
+### Step-by-Step guide
+1. clone repo with submodules
+```bash
+git clone --recursive https://github.com/ploedige/force-aware_mp.git
+```
+2. make `install.sh` executable
+```bash
+chmod +x install.sh
+```
+3. run `install.sh`
+```
+./install.sh
+```

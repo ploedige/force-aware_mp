@@ -1,6 +1,6 @@
 [submodule "monometis"]
 	path = monometis
-	url = git@github.com:hengyuan-hu/monometis.git
+	url = git@github.com:ploedige/monometis.git
 [submodule "MP_PyTorch"]
 	path = MP_PyTorch
 	url = git@github.com:ploedige/MP_PyTorch.git
