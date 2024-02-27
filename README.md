@@ -3,6 +3,7 @@
 ## Installation
 ### Prerequisites
   - [Anaconda](https://www.anaconda.com) or [Miniconda](https://docs.anaconda.com/free/miniconda/) installed
+  - [Mamba](https://mamba.readthedocs.io) installed
   
 ### Step-by-Step guide
 1. clone repo with submodules

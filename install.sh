@@ -8,7 +8,7 @@ echo
 echo "##############################"
 echo Creating new conda environment $envname...
 cd monometis
-conda env create -f polymetis/environment_cpu.yml -y
+mamba env create -f polymetis/environment_cpu.yml -y
 # because environment_cpu.yml sets the env name to "robo" a copy is created
 conda create -n $envname --clone robo -y
 # and the original env deleted
