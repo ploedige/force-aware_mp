@@ -18,3 +18,10 @@ chmod +x install.sh
 ```
 ./install.sh
 ```
+
+## Solved Problems
+- error while loading shared libraries: libPocoNet.so.60
+  - Solution: add library path to LD_LIBRARY_PATH
+  ```bash
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/miniconda3/envs/<environment name>/lib
+  ```
