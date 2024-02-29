@@ -7,3 +7,6 @@
 [submodule "related_repos/palrymetis"]
 	path = related_repos/palrymetis
 	url = https://github.com/gnoLLex/palrymetis.git
+[submodule "related_repos/SimulationFrameworkPublic"]
+	path = related_repos/SimulationFrameworkPublic
+	url = https://github.com/ALRhub/SimulationFrameworkPublic.git
