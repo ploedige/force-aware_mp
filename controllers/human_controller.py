@@ -1,19 +1,21 @@
 import torch
 import torchcontrol as toco
 
-from polymetis import RobotInterface
-
 from typing import Dict
 
 class HumanController(toco.PolicyModule):
     # stolen from SimulationFramework
-    def __init__(self, robot: RobotInterface, regularize=True):
+    def __init__(self, joint_angle_limits:torch.Tensor, regularize=True):
+        """Initializes the human controller
+
+        Args:
+            joint_angle_limits (Tensor): joint angle limits of the controlled robot. Needed for regularization
+            regularize (bool, optional): Defaults to True.
+        """
         super().__init__()
 
-        # get joint limits for regularization
-        limits = robot.robot_model.get_joint_angle_limits()
-        self.joint_pos_min = limits[0]
-        self.joint_pos_max = limits[1]
+        self.joint_pos_min = joint_angle_limits[0]
+        self.joint_pos_max = joint_angle_limits[1]
 
         # define gain
         self.gain = torch.Tensor([0.26, 0.44, 0.40, 1.11, 1.10, 1.20, 0.85])

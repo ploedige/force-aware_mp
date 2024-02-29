@@ -8,11 +8,7 @@ echo
 echo "##############################"
 echo Creating new conda environment $envname...
 cd monometis
-mamba env create -f polymetis/environment_cpu.yml -y
-# because environment_cpu.yml sets the env name to "robo" a copy is created
-conda create -n $envname --clone robo -y
-# and the original env deleted
-conda remove -n robo --all -y
+mamba env create -n $envname -f polymetis/environment_cpu.yml -y
 eval "$(conda shell.bash hook)"
 conda activate $envname
 
@@ -53,6 +49,15 @@ echo
 echo "##############################"
 echo Installing MP_PyTorch...
 pip install -e MP_PyTorch
+
+
+############ Update spdlog ############
+# for some reason spdlog is not detected by python
+# this *might* be due to the specified version needed to build polymetis
+echo
+echo "##############################"
+echo Updating spdlog...
+pip install spdlog
 
 echo
 echo

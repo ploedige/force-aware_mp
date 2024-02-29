@@ -19,9 +19,12 @@ chmod +x install.sh
 ./install.sh
 ```
 
-## Solved Problems
-- error while loading shared libraries: libPocoNet.so.60
-  - Solution: add library path to LD_LIBRARY_PATH
-  ```bash
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/miniconda3/envs/<environment name>/lib
-  ```
+## Known Bugs
+### Error while loading shared libraries: libPocoNet.so.60
+**Work-Around**: add library path to LD_LIBRARY_PATH
+```bash
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/miniconda3/envs/<environment name>/lib
+```
+### Packages Missing after Reboot
+Because Polymetis (Monometis) and MP_PyTorch are installed as editable packages pip creates symlinks that are lost after reboot.<br>
+**Work-Around**: readd packages or reinstall the environment via `install.sh`
