@@ -10,13 +10,17 @@
 ```bash
 git clone --recursive https://github.com/ploedige/force-aware_mp.git
 ```
-2. make `install.sh` executable
-```bash
-chmod +x install.sh
-```
-3. run `install.sh`
+2. run `install.sh`
 ```
 ./install.sh
+```
+
+## Usage
+### Launching the Robot Servers
+each robot server can be started via the `launch_poly_server.sh` <br>
+*Note:* Robot Config can be found in `configs/multibot_env.yaml`
+```
+./launch_poly_server.sh <robot_name (specified in multibot_env.yaml)>
 ```
 
 ## Known Bugs
