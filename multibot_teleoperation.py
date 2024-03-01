@@ -10,6 +10,12 @@ class TeleoperationHandler:
     def __init__(self, 
                  demonstrator: RobotInterface,
                  imitator: RobotInterface):
+        """handler for using two robots in teleoperation
+
+        Args:
+            demonstrator (RobotInterface): the robot used for demonstration
+            imitator (RobotInterface): the robot that replays the demonstrator's movements
+        """
         self.logger = logging.getLogger('teleoperation_handler')
         self.demonstrator = demonstrator
         self.imitator = imitator
@@ -40,7 +46,6 @@ class TeleoperationHandler:
         self.logger.info("Starting Teleoperation")
         try:
             while True:
-                # update robot target position
                 joint_pos_demonstrator = self.demonstrator.get_joint_positions()
                 self.imitator.update_desired_joint_positions(joint_pos_demonstrator)
 
@@ -50,7 +55,6 @@ class TeleoperationHandler:
 
 @hydra.main(config_path="configs", config_name="multibot_env")
 def main(cfg):
-    # Initialize robot interfaces
     demonstrator = RobotInterface(ip_address = cfg.robot_1.server_ip,
                                   port = cfg.robot_1.robot_port)
     imitator = RobotInterface(ip_address = cfg.robot_2.server_ip,
