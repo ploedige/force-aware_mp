@@ -27,7 +27,7 @@ class TeleoperationHandler:
         """
         self.logger.info("Initializing Policies")
         demonstrator_policy = HumanController(self.demonstrator.robot_model.get_joint_angle_limits())
-        self.demonstrator.send_torch_policy(demonstrator_policy)
+        self.demonstrator.send_torch_policy(demonstrator_policy, blocking=False)
         imitator_policy = HybridJointImpedanceControl(joint_pos_current=self.imitator.get_joint_positions(),
                                                       Kq=self.imitator.Kq_default, 
                                                       Kqd=self.imitator.Kqd_default, 
@@ -35,8 +35,9 @@ class TeleoperationHandler:
                                                       Kxd=self.imitator.Kxd_default, 
                                                       robot_model=self.imitator.robot_model,
                                                       ignore_gravity=self.imitator.use_grav_comp)
-        self.imitator.send_torch_policy(imitator_policy)
+        self.imitator.send_torch_policy(imitator_policy, blocking=False)
 
+        self.logger.info("Starting Teleoperation")
         try:
             while True:
                 # update robot target position
