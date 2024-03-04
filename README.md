@@ -17,7 +17,9 @@ git clone --recursive https://github.com/ploedige/force-aware_mp.git
 
 ## Usage
 ### Launching the Robot Servers
-each robot server can be started via the `launch_poly_server.sh` <br>
+1. activate FCI in the robots
+2. verify the enable switches (black emergency buttons) are depressed
+3. start each robot server via the `launch_poly_server.sh` script<br>
 *Note:* Robot Config can be found in `configs/multibot_env.yaml`
 ```
 ./launch_poly_server.sh <robot_name (specified in multibot_env.yaml)>
