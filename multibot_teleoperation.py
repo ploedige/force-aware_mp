@@ -32,7 +32,7 @@ class TeleoperationHandler:
         Note: this command is blocking
         """
         self.logger.info("Initializing Policies")
-        demonstrator_policy = HumanController(self.demonstrator.robot_model.get_joint_angle_limits())
+        demonstrator_policy = HumanController(self.demonstrator.robot_model)
         self.demonstrator.send_torch_policy(demonstrator_policy, blocking=False)
         imitator_policy = HybridJointImpedanceControl(joint_pos_current=self.imitator.get_joint_positions(),
                                                       Kq=self.imitator.Kq_default, 
