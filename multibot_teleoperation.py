@@ -1,4 +1,5 @@
 import hydra
+from omegaconf import OmegaConf
 import logging
 from typing import List
 
@@ -51,14 +52,17 @@ class TeleoperationHandler:
             self.logger.info("Received Interrupt Signal. Exiting teleoperation...")
         
 
-@hydra.main(config_path="configs", config_name="multibot_env")
+@hydra.main(config_path="configs", config_name="multibot_teleoperation")
 def main(cfg):
-    demonstrator = RobotInterface(ip_address = cfg.robot_1.server_ip,
-                                  port = cfg.robot_1.robot_port)
-    replicant_1 = RobotInterface(ip_address = cfg.robot_2.server_ip,
-                              port = cfg.robot_2.robot_port)
+    demonstrator = RobotInterface(ip_address = cfg.demonstrator.server_ip,
+                                  port = cfg.demonstrator.robot_port)
+    
+    replicants = []
+    for replicant_cfg in OmegaConf.to_container(cfg.replicants):
+        replicants.append(RobotInterface(ip_address = replicant_cfg.server_ip,
+                                         port = replicant_cfg.robot_port))
 
-    handler = TeleoperationHandler(demonstrator, [replicant_1])
+    handler = TeleoperationHandler(demonstrator, replicants)
     handler.run_teleoperation()
 
 if __name__ == "__main__":

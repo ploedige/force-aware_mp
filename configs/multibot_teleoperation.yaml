@@ -1,0 +1,15 @@
+demonstrator:
+    robot_ip: "10.10.10.201"
+    server_ip: "10.10.10.210"
+    robot_port: 1234
+    gripper_port: 1235
+replicants:
+    - robot_ip: "10.10.10.202"
+      server_ip: "10.10.10.210"
+      robot_port: 4321
+      gripper_port: 4322
+    # - robot_ip: "10.10.10.102"
+    #   server_ip: "10.10.10.210"
+    #   robot_port: 4321
+    #   gripper_port: 4322
+
