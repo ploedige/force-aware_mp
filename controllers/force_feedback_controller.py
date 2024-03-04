@@ -31,8 +31,8 @@ class ForceFeedbackController(HumanController):
         self.alpha = 0.9
 
 
-        self._replica_load = initial_replica_load
-        self._replica_load_filter = KalmanFilter(self._replica_load)
+        self.replica_load = initial_replica_load
+        self._replica_load_filter = KalmanFilter(self.replica_load)
 
         self._force_feedback = force_feedback
 
@@ -56,7 +56,7 @@ class ForceFeedbackController(HumanController):
         """
         # 1. get force feedback from replica
         replica_load = self._replica_load_filter.get_filtered(
-            self._replica_load
+            self.replica_load
         )
         # 2. total force clip filter
         # computes l1 norm of the replica load (maybe with incorporated d-gain control of the primary velocity).
