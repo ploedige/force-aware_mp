@@ -14,8 +14,9 @@ class HumanController(toco.PolicyModule):
         """
         super().__init__()
 
-        self.joint_pos_min = robot_model.joint_angle_limits[0]
-        self.joint_pos_max = robot_model.joint_angle_limits[1]
+        joint_angle_limits = robot_model.get_joint_angle_limits()
+        self.joint_pos_min = joint_angle_limits[0]
+        self.joint_pos_max = joint_angle_limits[1]
 
         # define gain
         self.gain = torch.Tensor([0.26, 0.44, 0.40, 1.11, 1.10, 1.20, 0.85])
