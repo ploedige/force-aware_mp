@@ -5,7 +5,7 @@ from typing import Dict
 
 class HumanController(toco.PolicyModule):
     # stolen from SimulationFramework
-    def __init__(self, joint_angle_limits:torch.Tensor, regularize=True):
+    def __init__(self, robot_model: toco.models.RobotModelPinocchio, regularize:bool = True):
         """Initializes the human controller
 
         Args:
@@ -14,8 +14,8 @@ class HumanController(toco.PolicyModule):
         """
         super().__init__()
 
-        self.joint_pos_min = joint_angle_limits[0]
-        self.joint_pos_max = joint_angle_limits[1]
+        self.joint_pos_min = robot_model.joint_angle_limits[0]
+        self.joint_pos_max = robot_model.joint_angle_limits[1]
 
         # define gain
         self.gain = torch.Tensor([0.26, 0.44, 0.40, 1.11, 1.10, 1.20, 0.85])
@@ -32,8 +32,8 @@ class HumanController(toco.PolicyModule):
 
         joint_pos_current = state_dict["joint_positions"]
 
-        left_boundary = 1 / torch.clamp(torch.abs(self.joint_pos_min - joint_pos_current), 1e-8, 100000)
-        right_boundary = 1 / torch.clamp(torch.abs(self.joint_pos_max - joint_pos_current), 1e-8, 100000)
+        left_boundary = 1 / torch.clamp(torch.abs(self.joint_pos_min - joint_pos_current), 1e-8, 100_000)
+        right_boundary = 1 / torch.clamp(torch.abs(self.joint_pos_max - joint_pos_current), 1e-8, 100_000)
 
         reg_load = left_boundary - right_boundary
 
