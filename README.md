@@ -20,9 +20,9 @@ git clone --recursive https://github.com/ploedige/force-aware_mp.git
 1. activate FCI in the robots
 2. verify the enable switches (black emergency buttons) are depressed
 3. start each robot server via the `launch_poly_server.sh` script<br>
-*Note:* Robot Config can be found in `configs/multibot_env.yaml`
+*Note:* Robot Configs are specified in the `configs` folder
 ```
-./launch_poly_server.sh <robot_name (specified in multibot_env.yaml)>
+./launch_poly_server.sh <config_name (without .yaml)> <robot_name (as specified in the config)>
 ```
 
 ### Adding Custom Parameters to a Policy
