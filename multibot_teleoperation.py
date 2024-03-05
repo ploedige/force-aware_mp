@@ -59,8 +59,8 @@ def main(cfg):
     
     replicants = []
     for replicant_cfg in OmegaConf.to_container(cfg.replicants):
-        replicants.append(RobotInterface(ip_address = replicant_cfg.server_ip,
-                                         port = replicant_cfg.robot_port))
+        replicants.append(RobotInterface(ip_address = replicant_cfg["server_ip"],
+                                         port = replicant_cfg["robot_port"]))
 
     handler = TeleoperationHandler(demonstrator, replicants)
     handler.run_teleoperation()
