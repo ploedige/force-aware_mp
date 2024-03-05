@@ -5,7 +5,7 @@ import torchcontrol as toco
 import numpy as np
 
 from human_controller import HumanController
-from kalman_filter import KalmanFilter
+from control_modules.kalman_filter import KalmanFilter
 
 class ForceFeedbackController(HumanController):
     def __init__(self, robot_model:toco.models.RobotModelPinocchio, initial_replica_load: torch.Tensor, 
@@ -55,9 +55,7 @@ class ForceFeedbackController(HumanController):
         returns the force feedback - 'd_feedback'
         """
         # 1. get force feedback from replica
-        replica_load = self._replica_load_filter.get_filtered(
-            self.replica_load
-        )
+        replica_load = self._replica_load_filter(self.replica_load)
         # 2. total force clip filter
         # computes l1 norm of the replica load (maybe with incorporated d-gain control of the primary velocity).
         MIN_FORCE_THRESHOLD = 4.0 
@@ -97,18 +95,10 @@ class ForceFeedbackController(HumanController):
         print("Disabled Force Feedback!")
         self._active_force_feedback = False
 
-    def getControl(self, robot):
-        human_control = super().getControl(robot)
-        force_feedback = self.get_force_feedback()
-        if self._active_force_feedback:
-            return human_control + force_feedback
-        else:
-            return human_control
-
     def forward(self, state_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
         human_control_torques = super().forward(state_dict)["joint_torques"]
         force_feedback = self.get_force_feedback()
         if self._active_force_feedback:
             return {"joint_torques" : human_control_torques + force_feedback}
-        else
+        else:
             return {"joint_torques" : human_control_torques}
