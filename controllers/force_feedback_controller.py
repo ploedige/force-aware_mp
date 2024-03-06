@@ -41,7 +41,8 @@ class ForceFeedbackController(HumanController):
     def forward(self, state_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
         assistive_torques = self._get_assistive_torques(state_dict["motor_torques_external"])
         centering_torques = self._get_centering_torques(state_dict["joint_positions"])
-        force_feedback_torques = self._get_force_feedback_torques(self.replication_torques, state_dict["joint_velocities"])
+        # force_feedback_torques = self._get_force_feedback_torques(self.replication_torques, state_dict["joint_velocities"])
+        force_feedback_torques = self.replication_torques
 
         if self._force_feedback:
             return {"joint_torques": assistive_torques + centering_torques - force_feedback_torques}
