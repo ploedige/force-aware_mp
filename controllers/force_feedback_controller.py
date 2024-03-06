@@ -4,7 +4,7 @@ import torch
 import torchcontrol as toco
 import numpy as np
 
-from human_controller import HumanController
+from controllers.human_controller import HumanController
 from control_modules.kalman_filter import KalmanFilter
 
 class ForceFeedbackController(HumanController):
