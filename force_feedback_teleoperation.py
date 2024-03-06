@@ -3,6 +3,7 @@ import logging
 from typing import List
 
 from torchcontrol.policies import HybridJointImpedanceControl
+from torchcontrol.utils import tensor_utils
 from polymetis import RobotInterface
 
 from controllers.force_feedback_controller import ForceFeedbackController
@@ -37,7 +38,8 @@ class TeleoperationHandler:
                                                         robot_model=self.replicant.robot_model,
                                                         ignore_gravity=self.replicant.use_grav_comp)
         self.replicant.send_torch_policy(replicant_policy, blocking=False)
-        initial_replica_load = self.replicant.get_robot_state()["external_torques"]
+        initial_replica_load = self.replicant.get_robot_state().motor_torques_external
+        initial_replica_load = tensor_utils.to_tensor(initial_replica_load)
         demonstrator_policy = ForceFeedbackController(self.demonstrator.robot_model, initial_replica_load, force_feedback=self.force_feedback)
         self.demonstrator.send_torch_policy(demonstrator_policy, blocking=False)
         self.logger.info("Starting Teleoperation")
@@ -45,8 +47,9 @@ class TeleoperationHandler:
             while True:
                 joint_pos_demonstrator = self.demonstrator.get_joint_positions()
                 self.replicant.update_desired_joint_positions(joint_pos_demonstrator)
-                current_replica_load = self.replicant.get_robot_state()["external_torques"]
-                self.demonstrator.update_current_policy[{"replica_load" : current_replica_load}]
+                current_replica_load = self.replicant.get_robot_state().motor_torques_external
+                current_replica_load = tensor_utils.to_tensor(current_replica_load)
+                self.demonstrator.update_current_policy({"replica_load" : current_replica_load})
 
         except KeyboardInterrupt:
             self.logger.info("Received Interrupt Signal. Exiting teleoperation...")

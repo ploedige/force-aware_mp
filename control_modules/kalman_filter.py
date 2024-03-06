@@ -17,41 +17,43 @@ class KalmanFilter(toco.ControlModule):
             dx_cov (float, optional): covariance of velocity noise. Defaults to 0.0.
             obs_noise_cov (float, optional): covariance of observation noise. Defaults to 1.2e-03.
         """
+        super().__init__()
+
         # Time interval
-        self.size = torch.nn.Parameter(X.size(dim=0))
+        self.size = X.size(dim=0)
 
         # State vector
         self.X = torch.nn.Parameter(torch.cat((X,torch.zeros((self.size)))))
 
         # State vector
-        self.X = torch.nn.Parameter(torch.cat((X, torch.zeros((self.sz,))), dim=0))
+        self.X = torch.nn.Parameter(torch.cat((X, torch.zeros((self.size,))), dim=0))
 
         # Motion Model
-        self.F = torch.nn.Parameter(torch.diag(torch.ones(2 * self.sz)))
-        self.F.data[:self.sz, self.sz:].copy_(torch.diag(torch.full((self.sz,), dt)))
+        self.F = torch.nn.Parameter(torch.diag(torch.ones(2 * self.size)))
+        self.F.data[:self.size, self.size:].copy_(torch.diag(torch.full((self.size,), dt)))
 
         # Motion Noise Covariance
-        self.Q = torch.nn.Parameter(torch.diag(torch.cat((torch.full((self.sz,), x_cov), torch.full((self.sz,), dx_cov)))))
+        self.Q = torch.nn.Parameter(torch.diag(torch.cat((torch.full((self.size,), x_cov), torch.full((self.size,), dx_cov)))))
 
         # Correlation Matrix
         self.P = self.Q
 
         # Observation Model
-        self.H = torch.nn.Parameter(torch.zeros((7, 14)))
-        self.H.data.copy_(torch.eye(7))
+        self.H = torch.nn.Parameter(torch.zeros((self.size, self.size * 2)))
+        self.H.data.fill_diagonal_(1)
 
         # Observation Noise Covariance (load - grav)
-        self.R = torch.nn.Parameter(torch.diag(torch.full((self.sz,), obs_noise_cov)))
+        self.R = torch.nn.Parameter(torch.diag(torch.full((self.size,), obs_noise_cov)))
 
-        self.S = torch.nn.Parameter(torch.zeros((self.sz, self.sz)))
+        self.S = torch.nn.Parameter(torch.zeros((self.size, self.size)))
         self.K = self.X
 
     def forward(self, Z: torch.Tensor):
-        self.X.data = torch.matmul(self.F, self.X)
-        self.P.data = torch.matmul(torch.matmul(self.F, self.P), torch.transpose(self.F, 0, 1)) + self.Q
+        self.X = torch.matmul(self.F, self.X)
+        self.P = torch.matmul(torch.matmul(self.F, self.P), torch.transpose(self.F, 0, 1)) + self.Q
 
-        self.S.data = torch.matmul(torch.matmul(self.H, self.P), torch.transpose(self.H, 0, 1)) + self.R
-        self.K.data = torch.matmul(torch.matmul(self.P, torch.transpose(self.H, 0, 1)), torch.linalg.inv(self.S))
-        self.X.data = self.X.data + torch.matmul(self.K, Z - torch.matmul(self.H, self.X))
-        self.P.data = self.P.data - torch.matmul(torch.matmul(self.K, self.S), torch.transpose(self.K, 0, 1))
-        return self.X.data[:self.sz]
+        self.S = torch.matmul(torch.matmul(self.H, self.P), torch.transpose(self.H, 0, 1)) + self.R
+        self.K = torch.matmul(torch.matmul(self.P, torch.transpose(self.H, 0, 1)), torch.linalg.inv(self.S))
+        self.X = self.X + torch.matmul(self.K, Z - torch.matmul(self.H, self.X))
+        self.P = self.P - torch.matmul(torch.matmul(self.K, self.S), torch.transpose(self.K, 0, 1))
+        return self.X[:self.size]
