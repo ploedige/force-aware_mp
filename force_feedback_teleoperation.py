@@ -47,9 +47,9 @@ class TeleoperationHandler:
             while True:
                 joint_pos_demonstrator = self.demonstrator.get_joint_positions()
                 self.replicant.update_desired_joint_positions(joint_pos_demonstrator)
-                current_replica_load = self.replicant.get_robot_state().motor_torques_external
-                current_replica_load = tensor_utils.to_tensor(current_replica_load)
-                self.demonstrator.update_current_policy({"replica_load" : current_replica_load})
+                current_replication_torques = self.replicant.get_robot_state().motor_torques_external
+                current_replication_torques = tensor_utils.to_tensor(current_replication_torques)
+                self.demonstrator.update_current_policy({"replication_torques" : current_replication_torques})
 
         except KeyboardInterrupt:
             self.logger.info("Received Interrupt Signal. Exiting teleoperation...")

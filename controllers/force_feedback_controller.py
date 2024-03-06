@@ -31,7 +31,7 @@ class ForceFeedbackController(HumanController):
         self._force_feedback_damping_gain = force_feedback_damping_gain
         self._force_feedback = force_feedback
 
-    def _force_feedback_torques(self, replication_torques: torch.Tensor, joint_vel_current: torch.Tensor) -> torch.Tensor:
+    def _get_force_feedback_torques(self, replication_torques: torch.Tensor, joint_vel_current: torch.Tensor) -> torch.Tensor:
         feedback_damping = self._force_feedback_damping_gain * joint_vel_current
         boundaries = torch.abs(replication_torques)
         feedback_damping = torch.clamp(feedback_damping, -boundaries, boundaries)
