@@ -7,7 +7,8 @@ class HumanController(toco.PolicyModule):
     # stolen from SimulationFramework
     def __init__(self, 
                  robot_model: toco.models.RobotModelPinocchio, 
-                 assistive_gain:torch.Tensor = torch.Tensor([0.26, 0.44, 0.40, 1.11, 1.10, 1.20, 0.85]),
+                #  assistive_gain:torch.Tensor = torch.Tensor([0.26, 0.44, 0.40, 1.11, 1.10, 1.20, 0.85]),
+                 assistive_gain:torch.Tensor = torch.Tensor([1.0, 0.1, 1.0, 0.75, 4.0, 1.25, 1.0]),
                  centering_gain:torch.Tensor = torch.Tensor([5.0, 2.2, 1.3, 0.3, 0.1, 0.1, 0.0])):
         """Controller that assists the moving of a robot by a human
 
