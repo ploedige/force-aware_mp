@@ -5,7 +5,7 @@ import logging
 
 from polymetis import RobotInterface
 
-class BaseTask(ABC, threading.Thread):
+class BaseTask(threading.Thread, ABC):
     def __init__(self, robots: List[RobotInterface]) -> None:
         """Base class for tasks controlling robots in a Polymetis environment
 
@@ -16,6 +16,7 @@ class BaseTask(ABC, threading.Thread):
         Args:
             robots (List[RobotInterface]): robots that can be controlled by the task
         """
+        super().__init__()
         self.robots = robots
         self.logger = logging.Logger(__name__)
         self._stop_event = threading.Event()

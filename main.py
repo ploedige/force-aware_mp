@@ -15,16 +15,17 @@ def main(cfg):
     replicant = RobotInterface(ip_address = cfg.robot_2.server_ip,
                               port = cfg.robot_2.robot_port)
 
-    # task = ForceFeedbackTeleoperationTask([demonstrator, replicant])
-    task = MultibotTeleoperationTask([demonstrator, replicant])
+    task = ForceFeedbackTeleoperationTask([demonstrator, replicant])
+    #task = MultibotTeleoperationTask([demonstrator, replicant])
     task.start()
     try:
         while True:
             time.sleep(10)
-            print(demonstrator.get_robot_state)
+            print(demonstrator.get_robot_state())
     except KeyboardInterrupt:
         logger.info("Received Interrupt Signal. Exiting Task...")
         task.stop()
+        task.join()
 
 if __name__ == "__main__":
     main()

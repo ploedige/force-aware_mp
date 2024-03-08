@@ -1,9 +1,9 @@
 #!/bin/bash
 
 get_robot_attr() {
-	python3 -c "import sys, yaml; print(yaml.load(open(\"configs/$3.yaml\"), yaml.FullLoader)[\"$1\"][\"$2\"])"
+	python3 -c "import sys, yaml; print(yaml.load(open(\"configs/robots.yaml\"), yaml.FullLoader)[\"$1\"][\"$2\"])"
 }
-launch_robot.py robot_client=franka_hardware robot_client.executable_cfg.robot_ip=$(get_robot_attr $2 robot_ip $1) port=$(get_robot_attr $2 robot_port $1)
+launch_robot.py robot_client=franka_hardware robot_client.executable_cfg.robot_ip=$(get_robot_attr $1 robot_ip) port=$(get_robot_attr $1 robot_port)
 if [ $? -eq 0 ]; then
     echo "Command was successful"
 else

@@ -38,13 +38,13 @@ class ForceFeedbackTeleoperationTask(TeleoperationBaseTask):
                                                         Kxd=self.replicant.Kxd_default, 
                                                         robot_model=self.replicant.robot_model,
                                                         ignore_gravity=self.replicant.use_grav_comp)
-        self.demonstrator.send_torch_policy(demonstrator_policy)
-        self.replicant.send_torch_policy(replicant_policy)
+        self.demonstrator.send_torch_policy(demonstrator_policy, blocking=False)
+        self.replicant.send_torch_policy(replicant_policy, blocking=False)
         self.logger.info("Policies initilized.")
 
     def run(self):
-        self.sync_robot_positions
-        self._initialize_policies(self)
+        self.sync_robot_positions()
+        self._initialize_policies()
         self.logger.info("Starting force feedback teleoperation...")
         while not self._stop_event.is_set():
             joint_pos_demonstrator = self.demonstrator.get_joint_positions()

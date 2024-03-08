@@ -3,6 +3,7 @@ from typing import List
 from polymetis import RobotInterface
 from torchcontrol.policies import HybridJointImpedanceControl
 
+from controllers.human_controller import HumanController
 from tasks.base_tasks import TeleoperationBaseTask
 
 class MultibotTeleoperationTask(TeleoperationBaseTask):
@@ -33,8 +34,8 @@ class MultibotTeleoperationTask(TeleoperationBaseTask):
         self.logger.info("Policies initilized.")
 
     def run(self):
-        self.sync_robot_positions
-        self._initialize_policies(self)
+        self.sync_robot_positions()
+        self._initialize_policies()
         self.logger.info("Starting multibot teleoperation...")
         while not self._stop_event.is_set():
             joint_pos_demonstrator = self.demonstrator.get_joint_positions()
