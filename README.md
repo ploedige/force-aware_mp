@@ -52,3 +52,11 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/miniconda3/envs/<environment name>/lib
 ### Packages Missing after Reboot
 Because Polymetis (Monometis) and MP_PyTorch are installed as editable packages pip creates symlinks that are lost after reboot.<br>
 **Work-Around**: readd packages or reinstall the environment via `install.sh`
+
+### GUI looks horrible
+tkinter does not have nice fonts because of conda <br>
+**Work-Around**: add a special tk package (see https://github.com/conda-forge/tk-feedstock/pull/40#issuecomment-1803067221)
+```
+conda install -c conda-forge tk=*=xft_*
+```
+Note: in zsh the * need to be escaped
