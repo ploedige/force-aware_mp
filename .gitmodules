@@ -10,3 +10,6 @@
 [submodule "related_repos/SimulationFrameworkPublic"]
 	path = related_repos/SimulationFrameworkPublic
 	url = https://github.com/ALRhub/SimulationFrameworkPublic.git
+[submodule "data"]
+	path = data_magement/data
+	url = git@github.com:ploedige/fam_data.git
