@@ -18,7 +18,7 @@ class MainWindow(tk.Tk):
         title_label = tk.Label(self,text=title, font=("Helvetica",18,'bold'))
         title_label.grid(row=0, column=0, columnspan=2)
 
-        task_control = TaskControl(self)
+        task_control = TaskControl(self,env_cfg.robots)
         task_control.grid(row=1, column=0, padx=5, pady=5)
 
         log_control = LoggingControl(self)
