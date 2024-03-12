@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import font
 
 from GUI.robot_control import RobotControl
+from GUI.task_control import TaskControl
 
 class MainWindow(tk.Tk):
     def __init__(self):
@@ -11,6 +12,9 @@ class MainWindow(tk.Tk):
 
         title_label = tk.Label(self,text=title, font=("Helvetica",18,'bold'))
         title_label.grid(row=0, column=0, columnspan=2)
+
+        task_control = TaskControl(self)
+        task_control.grid(row=1, column=0, padx=5, pady=5)
 
         demonstrator_control = RobotControl(self, "Test 1")
         demonstrator_control.grid(row=1, column=1, padx=5, pady=5)
