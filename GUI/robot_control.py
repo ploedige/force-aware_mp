@@ -8,7 +8,9 @@ class RobotControl(tk.Frame):
         super().__init__(master)
         self.master = master
 
-        self.name_label = tk.Label(self, text=robot_name)
+        self.configure(highlightthickness=5, highlightbackground='black', padx=5, pady=5)
+
+        self.name_label = tk.Label(self, text=robot_name, font=('Helvetica',14,'bold'))
         self.name_label.grid(row=0, column=0, columnspan=4, padx=5, pady=5, sticky='ew')
         
         self.start_button = tk.Button(self, text="Start", command=self._start_robot_server)
@@ -20,7 +22,7 @@ class RobotControl(tk.Frame):
         self.config_button = tk.Button(self, text="Config", command=self._config_robot_server)
         self.config_button.grid(row=1, column=2, padx=5, pady=5, sticky='ew')
 
-        self.status_text = tk.Text(self, wrap=tk.WORD, height=20, width=50)
+        self.status_text = tk.Text(self, wrap=tk.WORD, height=10, width=50)
         self.status_text.grid(row=2, column=0, columnspan=3, sticky="nsew")
 
         self.scrollbar = tk.Scrollbar(self, command=self.status_text.yview)
