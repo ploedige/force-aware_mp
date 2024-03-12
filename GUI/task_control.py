@@ -11,6 +11,11 @@ class TaskControl(tk.Frame):
         super().__init__(master)
         self.master = master
 
+        self.configure(highlightthickness=5, highlightbackground='black', padx=5, pady=5)
+
+        name_label = tk.Label(self, text="Task Control", font=('Helvetica',14,'bold'))
+        name_label.grid(row=0, column=0, columnspan=3, padx=5, pady=5, sticky='ew')
+
         # Dropdown menu
         tasks = self._get_tasks()
         self.selected_task = tk.StringVar()
