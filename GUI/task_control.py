@@ -52,7 +52,7 @@ class TaskControl(tk.Frame):
         selected_task = self.task_selection.get()
         task_type = self._tasks[selected_task]
         self._task = task_type(self._init_robots(self._robots_cfg))
-        self._task.run()
+        self._task.start()
         self.start_button.config(state=tk.DISABLED)
         self.config_button.config(state=tk.DISABLED)
         self.stop_button.config(state=tk.NORMAL)
