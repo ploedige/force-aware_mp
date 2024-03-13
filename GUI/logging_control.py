@@ -7,10 +7,10 @@ from polymetis import RobotInterface
 from data_magement.robot_data_manager import RobotDataManager
 
 class LoggingControl(tk.Frame):
-    def __init__(self, master, robots:List[RobotInterface]):
+    def __init__(self, master, robot_interface_controls:List[RobotInterface]):
         super().__init__(master)
         self.data_managers:List[RobotDataManager] = []
-        self.robots = robots
+        self.robot_interface_controls = robot_interface_controls
         self._init_ui()
 
     def _init_ui(self):
@@ -47,8 +47,14 @@ class LoggingControl(tk.Frame):
         self.status_text.grid(row=4, column=0, columnspan=3, sticky="nsew")
 
     def start(self):
+        robots = [ric.robot_interface for ric in self.robot_interface_controls] 
+        if (robots is None or 
+            len(robots) == 0 
+            or any(robot is None for robot in robots)):
+            self._add_status("Robot interfaces not initialized.")
+            return
         if len(self.data_managers) == 0:
-            for robot in self.robots:
+            for robot in robots:
                 data_manager = RobotDataManager(robot,self.log_info_input.get())
                 self.data_managers.append(data_manager)
                 data_manager.start()

@@ -9,11 +9,12 @@ from polymetis import RobotInterface
 
 import tasks
 from tasks.base_tasks import BaseTask
+from GUI.robot_interface_control import RobotInterfaceControl
 
 class TaskControl(tk.Frame):
-    def __init__(self, master, robots: List[RobotInterface]):
+    def __init__(self, master, robot_interface_controls: List[RobotInterfaceControl]):
         super().__init__(master)
-        self.robots = robots
+        self.robot_interface_controls = robot_interface_controls
         self._tasks = self._get_tasks()
         self._current_task = None
         self._init_ui(list(self._tasks.keys()))
@@ -51,9 +52,10 @@ class TaskControl(tk.Frame):
         self.status_text.grid(row=2, column=0, columnspan=3, sticky="nsew")
 
     def start(self):
-        if (self.robots is None or 
-            len(self.robots) == 0 
-            or any(robot is None for robot in self.robots)):
+        robots = [ric.robot_interface for ric in self.robot_interface_controls] 
+        if (robots is None or 
+            len(robots) == 0 
+            or any(robot is None for robot in robots)):
             self._add_status("Robot interfaces not initialized.")
             return
         if self._current_task is not None:
@@ -61,7 +63,7 @@ class TaskControl(tk.Frame):
             return
         selected_task = self.task_selection.get()
         task_type = self._tasks[selected_task]
-        self._current_task = task_type(self.robots)
+        self._current_task = task_type(robots)
         self._current_task.start()
         self.start_button.config(state=tk.DISABLED)
         self.config_button.config(state=tk.DISABLED)

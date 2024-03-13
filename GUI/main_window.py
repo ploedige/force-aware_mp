@@ -34,12 +34,10 @@ class MainWindow(tk.Tk):
         replicant_interface_control = RobotInterfaceControl(robot_interfaces_frame, env_cfg.robots[1])
         replicant_interface_control.grid(row=0,column=1, padx=5, pady=5)
 
-        robot_interfaces = [demonstrator_interface_control.robot_interface, replicant_interface_control.robot_interface]
-
-        task_control = TaskControl(main_ui_frame,robot_interfaces)
+        task_control = TaskControl(main_ui_frame,[demonstrator_interface_control, replicant_interface_control])
         task_control.pack(padx=5, pady=5)
 
-        log_control = LoggingControl(main_ui_frame, robot_interfaces)
+        log_control = LoggingControl(main_ui_frame, [demonstrator_interface_control, replicant_interface_control])
         log_control.pack(padx=5, pady=5)
 
         robot_server_frame = tk.Frame(content_frame)

@@ -34,6 +34,8 @@ class RobotInterfaceControl(tk.Frame):
             self.robot_interface = RobotInterface(ip_address = self._robot_cfg.server_ip,
                                                  port = self._robot_cfg.robot_port)
             self._add_status("Successfully initialized interface.")
+            self.start_button.config(state=tk.DISABLED)
+            self.stop_button.config(state=tk.NORMAL)
         except:
             self._add_status("Failed to initialize interface. Is the server running?")
             self.robot_interface = None
@@ -41,6 +43,8 @@ class RobotInterfaceControl(tk.Frame):
     def stop(self):
         self.robot_interface = None
         self._add_status("Robot interface connection closed.")
+        self.start_button.config(state=tk.NORMAL)
+        self.stop_button.config(state=tk.DISABLED)
 
     def _add_status(self, status:str):
         self.status_text.insert(tk.END, status)
