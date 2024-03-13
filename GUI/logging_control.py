@@ -24,7 +24,7 @@ class LoggingControl(tk.Frame):
         info_label.grid(row=1, column=0, columnspan=3, padx=5, pady=5, sticky='ew')
         style = ttk.Style()
         style.configure("Padded.TEntry", padding=(5,5,5,5))
-        self.log_info_input = ttk.Entry(self, width=50, font=('Helvetica',12), style="Padded.TEntry")
+        self.log_info_input = ttk.Entry(self, width=100, font=('Helvetica',12), style="Padded.TEntry")
         self.log_info_input.grid(row=2, column=0, columnspan=3, padx=5, pady=5)
 
         # Start Button
@@ -41,6 +41,10 @@ class LoggingControl(tk.Frame):
         self.stop_button = tk.Button(self, text="Stop", command=self.stop)
         self.stop_button.grid(row=3, column=2, padx=5, pady=5, sticky='ew')
         self.stop_button.config(state=tk.DISABLED)
+
+        #Status Field
+        self.status_text = tk.Text(self, wrap=tk.WORD, height=5, width=50)
+        self.status_text.grid(row=4, column=0, columnspan=3, sticky="nsew")
 
     def start(self):
         if len(self.data_managers) == 0:
@@ -63,3 +67,7 @@ class LoggingControl(tk.Frame):
         self.start_button.config(state=tk.NORMAL)
         self.split_button.config(state=tk.DISABLED)
         self.stop_button.config(state=tk.DISABLED)
+
+    def _add_status(self, status:str):
+        self.status_text.insert(tk.END, status)
+        self.status_text.see(tk.END)

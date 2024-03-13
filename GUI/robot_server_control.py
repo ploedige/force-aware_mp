@@ -17,7 +17,7 @@ class RobotServerControl(tk.Frame):
     def _init_ui(self):
         self.configure(highlightthickness=5, highlightbackground='black', padx=5, pady=5)
 
-        self.name_label = tk.Label(self, text=self.robot_cfg.name, font=('Helvetica',14,'bold'))
+        self.name_label = tk.Label(self, text=f"Robot Server: {self.robot_cfg.name}", font=('Helvetica',14,'bold'))
         self.name_label.grid(row=0, column=0, columnspan=4, padx=5, pady=5, sticky='ew')
         
         self.start_button = tk.Button(self, text="Start", command=self._start_robot_server)
@@ -32,7 +32,7 @@ class RobotServerControl(tk.Frame):
         self.config_button.grid(row=1, column=2, padx=5, pady=5, sticky='ew')
         self.config_button.config(state=tk.NORMAL)
 
-        self.status_text = tk.Text(self, wrap=tk.WORD, height=50, width=100)
+        self.status_text = tk.Text(self, wrap=tk.WORD, height=20, width=100)
         self.status_text.grid(row=2, column=0, columnspan=3, sticky="nsew")
 
         self.scrollbar = tk.Scrollbar(self, command=self.status_text.yview)
