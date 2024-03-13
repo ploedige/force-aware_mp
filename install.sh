@@ -59,6 +59,13 @@ echo "##############################"
 echo Updating spdlog...
 pip install spdlog
 
+############ Tkinter with better font support ############
+# the conda tk package does not have true type font support (see https://github.com/conda-forge/tk-feedstock/pull/40#issuecomment-1803067221)
+echo
+echo "##############################"
+echo Installing Tk with truetype support...
+mamba install -c conda-forge tk=*=xft_* -y
+
 echo
 echo
 echo Successfully installed.
