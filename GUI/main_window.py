@@ -21,8 +21,8 @@ class MainWindow(tk.Tk):
         task_control = TaskControl(self,env_cfg.robots)
         task_control.grid(row=1, column=0, padx=5, pady=5)
 
-        log_control = LoggingControl(self)
-        log_control.grid(row=2, column=0, padx=0, pady=0)
+        # log_control = LoggingControl(self)
+        # log_control.grid(row=2, column=0, padx=0, pady=0)
 
         demonstrator_control = RobotControl(self, env_cfg.robots[0])
         demonstrator_control.grid(row=1, column=1, padx=5, pady=5)

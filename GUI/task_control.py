@@ -61,6 +61,8 @@ class TaskControl(tk.Frame):
     def stop(self):
         if self._task is not None:
             self._task.stop()
+            self._task.join()
+            self._task = None
         self.start_button.config(state=tk.NORMAL)
         self.config_button.config(state=tk.NORMAL)
         self.stop_button.config(state=tk.DISABLED)

@@ -1,5 +1,7 @@
 import tkinter as tk
 import subprocess, os
+from queue import Queue, Empty
+from threading import Thread
 
 from omegaconf import DictConfig
 
@@ -8,7 +10,10 @@ class RobotControl(tk.Frame):
         super().__init__(master)
         self.master = master
         self.robot_cfg = robot_cfg
-
+        self.output_queue = Queue()
+        self._init_ui()
+    
+    def _init_ui(self):
         self.configure(highlightthickness=5, highlightbackground='black', padx=5, pady=5)
 
         self.name_label = tk.Label(self, text=self.robot_cfg.name, font=('Helvetica',14,'bold'))
@@ -26,7 +31,7 @@ class RobotControl(tk.Frame):
         self.config_button.grid(row=1, column=2, padx=5, pady=5, sticky='ew')
         self.config_button.config(state=tk.NORMAL)
 
-        self.status_text = tk.Text(self, wrap=tk.WORD, height=10, width=50)
+        self.status_text = tk.Text(self, wrap=tk.WORD, height=50, width=100)
         self.status_text.grid(row=2, column=0, columnspan=3, sticky="nsew")
 
         self.scrollbar = tk.Scrollbar(self, command=self.status_text.yview)
@@ -41,8 +46,8 @@ class RobotControl(tk.Frame):
                    f"robot_client.executable_cfg.robot_ip={self.robot_cfg.robot_ip}",
                    f"port={self.robot_cfg.robot_port}"]
         conda_env_path = subprocess.check_output(["bash", "-c", "conda info --envs | grep '*' | awk '{print $NF}'"], encoding="utf-8").strip()
-        ld_lib_path = subprocess.check_output(["bash", "-c", "$LD_LIBRARY_PATH"], encoding="utf-8").strip()
-        ld_lib_path = f"{ld_lib_path}:{conda_env_path}"
+        ld_lib_path = subprocess.check_output(["bash", "-c", "echo $LD_LIBRARY_PATH"], encoding="utf-8").strip()
+        ld_lib_path = f"{ld_lib_path}:{conda_env_path}/lib"
         env = os.environ.copy()
         env["LD_LIBRARY_PATH"] = ld_lib_path
         self.process = subprocess.Popen(command, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
@@ -62,12 +67,23 @@ class RobotControl(tk.Frame):
     def _config_robot_server(self):
         raise NotImplementedError
 
+    def _enqueue_process_output(self):
+        while True:
+            self.output_queue.put(self.process.stdout.readline())
+
     def _read_process_output(self):
         if self.process:
-            output_line = self.process.stdout.readline()
-            scroll_pos = self.status_text.yview()[1]  # Get the current position of the scroll view
-            at_bottom = scroll_pos == 1.0  # Check if the scroll view is at the bottom
-            self.status_text.insert(tk.END, output_line)
-            if at_bottom:
-                self.status_text.see(tk.END)  # Scroll to the end if it was at the bottom before
-            self.after(10, self._read_process_output)
+            output_read_thread = Thread(target=self._enqueue_process_output)
+            output_read_thread.daemon = True
+            output_read_thread.start()
+
+            try: output_line = self.output_queue.get_nowait()
+            except Empty:
+                pass
+            else:
+                scroll_pos = self.status_text.yview()[1]  # Get the current position of the scroll view
+                at_bottom = scroll_pos == 1.0  # Check if the scroll view is at the bottom
+                self.status_text.insert(tk.END, output_line)
+                if at_bottom:
+                    self.status_text.see(tk.END)  # Scroll to the end if it was at the bottom before
+                self.after(10, self._read_process_output)

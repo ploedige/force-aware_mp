@@ -47,7 +47,7 @@ It can then be modified during operation
 ### Error while loading shared libraries: libPocoNet.so.60
 **Work-Around**: add library path to LD_LIBRARY_PATH
 ```bash
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/miniconda3/envs/<environment name>/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/<environment location>/<environment name>/lib
 ```
 ### Packages Missing after Reboot
 Because Polymetis (Monometis) and MP_PyTorch are installed as editable packages pip creates symlinks that are lost after reboot.<br>
