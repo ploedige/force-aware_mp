@@ -5,12 +5,13 @@ from threading import Thread
 
 from omegaconf import DictConfig
 
-class RobotControl(tk.Frame):
+class RobotServerControl(tk.Frame):
     def __init__(self, master:tk.Tk, robot_cfg:DictConfig):
         super().__init__(master)
         self.master = master
         self.robot_cfg = robot_cfg
-        self.output_queue = Queue()
+        self._output_read_thread = None
+        self._output_queue = Queue()
         self._init_ui()
     
     def _init_ui(self):
@@ -68,22 +69,22 @@ class RobotControl(tk.Frame):
         raise NotImplementedError
 
     def _enqueue_process_output(self):
-        while True:
-            self.output_queue.put(self.process.stdout.readline())
+        self._output_queue.put(self.process.stdout.readline())
 
     def _read_process_output(self):
         if self.process:
-            output_read_thread = Thread(target=self._enqueue_process_output)
-            output_read_thread.daemon = True
-            output_read_thread.start()
+            if self._output_read_thread is None or not self._output_read_thread.is_alive():
+                self._output_read_thread = Thread(target=self._enqueue_process_output)
+                self._output_read_thread.daemon = True
+                self._output_read_thread.start()
 
-            try: output_line = self.output_queue.get_nowait()
+            try: output_line = self._output_queue.get_nowait()
             except Empty:
-                pass
+                pass    
             else:
                 scroll_pos = self.status_text.yview()[1]  # Get the current position of the scroll view
                 at_bottom = scroll_pos == 1.0  # Check if the scroll view is at the bottom
                 self.status_text.insert(tk.END, output_line)
                 if at_bottom:
                     self.status_text.see(tk.END)  # Scroll to the end if it was at the bottom before
-                self.after(10, self._read_process_output)
+            self.master.after(10, self._read_process_output)
