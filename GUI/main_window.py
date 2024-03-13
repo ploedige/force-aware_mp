@@ -17,24 +17,36 @@ class MainWindow(tk.Tk):
         self.title(title)
 
         title_label = tk.Label(self,text=title, font=("Helvetica",18,'bold'))
-        title_label.grid(row=0, column=0, columnspan=2)
+        title_label.pack(padx=5, pady=5)
 
-        demonstrator_interface_control = RobotInterfaceControl(self, env_cfg.robots[0])
-        demonstrator_interface_control.grid(row=1, column=0, padx=5, pady=5)
+        content_frame = tk.Frame(self)
+        content_frame.pack()
 
-        replicant_interface_control = RobotInterfaceControl(self, env_cfg.robots[1])
-        replicant_interface_control.grid(row=1, column=1, padx=5, pady=5)
+        main_ui_frame = tk.Frame(content_frame)
+        main_ui_frame.grid(row=0, column=0)
+
+        robot_interfaces_frame = tk.Frame(main_ui_frame)
+        robot_interfaces_frame.pack()
+
+        demonstrator_interface_control = RobotInterfaceControl(robot_interfaces_frame, env_cfg.robots[0])
+        demonstrator_interface_control.grid(row=0, column=0, padx=5, pady=5)
+
+        replicant_interface_control = RobotInterfaceControl(robot_interfaces_frame, env_cfg.robots[1])
+        replicant_interface_control.grid(row=0,column=1, padx=5, pady=5)
 
         robot_interfaces = [demonstrator_interface_control.robot_interface, replicant_interface_control.robot_interface]
 
-        task_control = TaskControl(self,robot_interfaces)
-        task_control.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
+        task_control = TaskControl(main_ui_frame,robot_interfaces)
+        task_control.pack(padx=5, pady=5)
 
-        log_control = LoggingControl(self, robot_interfaces)
-        log_control.grid(row=3, column=0, columnspan=2, padx=0, pady=0)
+        log_control = LoggingControl(main_ui_frame, robot_interfaces)
+        log_control.pack(padx=5, pady=5)
 
-        demonstrator_server = RobotServerControl(self, env_cfg.robots[0])
-        demonstrator_server.grid(row=1, column=2, padx=5, pady=5)
+        robot_server_frame = tk.Frame(content_frame)
+        robot_server_frame.grid(row=0, column=1)
 
-        replicant_server = RobotServerControl(self, env_cfg.robots[1])
-        replicant_server.grid(row=2, column=2, padx=5, pady=5)
+        demonstrator_server = RobotServerControl(robot_server_frame, env_cfg.robots[0])
+        demonstrator_server.pack(padx=5, pady=5)
+
+        replicant_server = RobotServerControl(robot_server_frame, env_cfg.robots[1])
+        replicant_server.pack(padx=5, pady=5)

@@ -26,7 +26,7 @@ class RobotInterfaceControl(tk.Frame):
         self.stop_button.grid(row=1, column=1, padx=5, pady=5, sticky='ew')
         self.stop_button.config(state=tk.DISABLED)
 
-        self.status_text = tk.Text(self, wrap=tk.WORD, height=5, width=40)
+        self.status_text = tk.Text(self, wrap=tk.WORD, height=5, width=50)
         self.status_text.grid(row=2, column=0, columnspan=2, sticky="nsew")
 
     def start(self):
