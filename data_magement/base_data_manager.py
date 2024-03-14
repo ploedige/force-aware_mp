@@ -1,7 +1,7 @@
 import threading
 import logging
-import h5py
 import os
+import pickle
 
 import abc
 
@@ -11,6 +11,8 @@ class BaseDataManager(threading.Thread, abc.ABC):
         self.logger = logging.Logger(__name__)
         self._stop_event = threading.Event()
         self._split_event = threading.Event()
+        self.log_info = log_info
+        self.store_freq = store_freq
 
     def stop(self):
         self._stop_event.set()
@@ -23,7 +25,6 @@ class BaseDataManager(threading.Thread, abc.ABC):
     def _store_data(self, data, log_name):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         data_dir = os.path.join(current_dir, "data")
-        log_file_path = os.path.join(data_dir, f"{log_name}.h5")
-        with h5py.File(log_file_path, 'w') as f:
-            for key, value in data.items():
-                f.create_dataset(key, data=value)
+        log_file_path = os.path.join(data_dir, f"{log_name}.pkl")
+        with open(log_file_path, 'wb') as f:
+            pickle.dump(data, f)

@@ -69,6 +69,7 @@ class LoggingControl(tk.Frame):
     def stop(self):
         for data_manager in self.data_managers:
             data_manager.stop()
+            data_manager.join()
         self.data_managers = []
         self.start_button.config(state=tk.NORMAL)
         self.split_button.config(state=tk.DISABLED)
