@@ -1,11 +1,21 @@
+import logging
 import tkinter as tk
 from omegaconf import DictConfig
 
 from polymetis import RobotInterface
 
+from GUI.status_log import StatusLog
+
 class RobotInterfaceControl(tk.Frame):
-    def __init__(self, master,robot_cfg:DictConfig):
+    def __init__(self, master: tk.Frame,robot_cfg:DictConfig):
+        """Tk module for controlling a robot API.
+
+        Args:
+            master (tk.Frame): Parent window/frame
+            robot_cfg (DictConfig): configuration of the robot
+        """
         super().__init__(master)
+        self.logger = logging.getLogger(f"{__name__}({robot_cfg.name})")
         self._robot_cfg = robot_cfg
         self.robot_interface = None
         self._init_ui()
@@ -26,26 +36,23 @@ class RobotInterfaceControl(tk.Frame):
         self.stop_button.grid(row=1, column=1, padx=5, pady=5, sticky='ew')
         self.stop_button.config(state=tk.DISABLED)
 
-        self.status_text = tk.Text(self, wrap=tk.WORD, height=5, width=50)
-        self.status_text.grid(row=2, column=0, columnspan=2, sticky="nsew")
+        self.status_log = StatusLog(self, height=5, width=50)
+        self.status_log.grid(row=2, column=0, columnspan=2, sticky="nsew")
+        self.logger.addHandler(self.status_log.handler)
 
     def start(self):
         try:
             self.robot_interface = RobotInterface(ip_address = self._robot_cfg.server_ip,
                                                  port = self._robot_cfg.robot_port)
-            self._add_status("Successfully initialized interface.")
+            self.logger.info("Successfully initialized interface.")
             self.start_button.config(state=tk.DISABLED)
             self.stop_button.config(state=tk.NORMAL)
         except:
-            self._add_status("Failed to initialize interface. Is the server running?")
+            self.logger.error("Failed to initialize interface. Is the server running?")
             self.robot_interface = None
 
     def stop(self):
         self.robot_interface = None
-        self._add_status("Robot interface connection closed.")
+        self.logger.info("Robot interface connection closed.")
         self.start_button.config(state=tk.NORMAL)
         self.stop_button.config(state=tk.DISABLED)
-
-    def _add_status(self, status:str):
-        self.status_text.insert(tk.END, status)
-        self.status_text.see(tk.END)

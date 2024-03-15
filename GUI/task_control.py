@@ -1,19 +1,22 @@
-import tkinter as tk
-from tkinter import ttk
 from omegaconf import DictConfig
-import inspect
-import pkgutil
+from tkinter import ttk
 from typing import Dict, List
+import inspect
+import logging
+import pkgutil
+import tkinter as tk
 
 from polymetis import RobotInterface
 
 import tasks
 from tasks.base_tasks import BaseTask
 from GUI.robot_interface_control import RobotInterfaceControl
+from GUI.status_log import StatusLog
 
 class TaskControl(tk.Frame):
     def __init__(self, master, robot_interface_controls: List[RobotInterfaceControl]):
         super().__init__(master)
+        self.logger = logging.getLogger(__name__)
         self.robot_interface_controls = robot_interface_controls
         self._tasks = self._get_tasks()
         self._current_task = None
@@ -47,19 +50,20 @@ class TaskControl(tk.Frame):
         self.config_button.grid(row=1, column=2, padx=5, pady=5, sticky='ew')
         self.config_button.config(state=tk.NORMAL)
 
-        #Status Field
-        self.status_text = tk.Text(self, wrap=tk.WORD, height=5, width=50)
-        self.status_text.grid(row=2, column=0, columnspan=3, sticky="nsew")
+        #Status Log
+        self.status_log = StatusLog(self, height=5, width=100)
+        self.status_log.grid(row=2, column=0, columnspan=3, sticky="nsew")
+        self.logger.addHandler(self.status_log.handler)
 
     def start(self):
         robots = [ric.robot_interface for ric in self.robot_interface_controls] 
         if (robots is None or 
             len(robots) == 0 
             or any(robot is None for robot in robots)):
-            self._add_status("Robot interfaces not initialized.")
+            self.logger.error("Robot interfaces not initialized.")
             return
         if self._current_task is not None:
-            self._add_status("There is already a task running.")
+            self.logger.warning("There is already a task running. Stop it before starting a new one.")
             return
         selected_task = self.task_selection.get()
         task_type = self._tasks[selected_task]
@@ -68,7 +72,7 @@ class TaskControl(tk.Frame):
         self.start_button.config(state=tk.DISABLED)
         self.config_button.config(state=tk.DISABLED)
         self.stop_button.config(state=tk.NORMAL)
-        self._add_status(f"Started task {selected_task}.")
+        self.logger.info(f"Started task {selected_task}.")
 
 
     def stop(self):
@@ -79,14 +83,10 @@ class TaskControl(tk.Frame):
         self.start_button.config(state=tk.NORMAL)
         self.config_button.config(state=tk.NORMAL)
         self.stop_button.config(state=tk.DISABLED)
-        self._add_status("Stopped current task.")
+        self.logger.info("Stopped current task.")
 
     def config(self):
         raise NotImplementedError
-
-    def _add_status(self, status:str):
-        self.status_text.insert(tk.END, status)
-        self.status_text.see(tk.END)
 
     @staticmethod
     def _get_tasks()-> Dict[str, BaseTask]:

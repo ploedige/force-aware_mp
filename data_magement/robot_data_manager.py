@@ -5,7 +5,14 @@ from polymetis import RobotInterface
 from data_magement.base_data_manager import BaseDataManager
 
 class RobotDataManager(BaseDataManager):
-    def __init__(self, robot: RobotInterface, log_info:str = '', store_freq:float = 0.5):
+    def __init__(self, robot: RobotInterface, log_info:str = '', store_freq:float = None):
+        """Data manager for robot data.
+
+        Args:
+            robot (RobotInterface): Robot interface to log data from.
+            log_info (str, optional): Information about the data to be logged. Defaults to ''.
+            store_freq (float, optional): Frequency in which to write the data to the log. All data will always be logged. Executes as fast-as-possible if None. Defaults to None.
+        """
         super().__init__(log_info, store_freq)
         self.robot = robot
 
@@ -22,7 +29,7 @@ class RobotDataManager(BaseDataManager):
         last_store_time = datetime.now()
 
         while not self._stop_event.is_set():
-            log_delay = 1/self.store_freq * 1000 # in ms
+            log_delay = 0 if self.store_freq is None else 1/self.store_freq * 1000 # in ms
             if self._split_event.is_set():
                 self._split_event.clear()
                 log_name = f"{start_time.strftime('%Y-%m-%d_%H-%M-%S')}_{self.log_info}_SPLIT_{split_cnt}"

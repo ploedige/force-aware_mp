@@ -5,8 +5,16 @@ from threading import Thread
 
 from omegaconf import DictConfig
 
+from GUI.status_log import StatusLog
+
 class RobotServerControl(tk.Frame):
-    def __init__(self, master:tk.Tk, robot_cfg:DictConfig):
+    def __init__(self, master:tk.Frame, robot_cfg:DictConfig):
+        """Tk module for controlling a robot server.
+
+        Args:
+            master (tk.Tk): The parent window/frame
+            robot_cfg (DictConfig): Configuration of the robot 
+        """
         super().__init__(master)
         self.master = master
         self.robot_cfg = robot_cfg
@@ -88,3 +96,10 @@ class RobotServerControl(tk.Frame):
                 if at_bottom:
                     self.status_text.see(tk.END)  # Scroll to the end if it was at the bottom before
             self.master.after(10, self._read_process_output)
+
+    @staticmethod
+    def stop_all_servers():
+        """stops all running robot servers.
+        """
+        command = ["sudo", "pkill", "-9", "run_server"]
+        subprocess.run(command)

@@ -6,7 +6,13 @@ import pickle
 import abc
 
 class BaseDataManager(threading.Thread, abc.ABC):
-    def __init__(self, log_info:str = '', store_freq:float = 0.5):
+    def __init__(self, log_info:str = '', store_freq:float = None):
+        """Base class for data management.
+
+        Args:
+            log_info (str, optional): Information about the data to be logged. Defaults to ''.
+            store_freq (float, optional): Frequency in which to write the data to the log. All data will always be logged. Executes as fast-as-possible if None. Defaults to None.
+        """
         super().__init__()
         self.logger = logging.Logger(__name__)
         self._stop_event = threading.Event()

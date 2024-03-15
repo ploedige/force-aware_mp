@@ -43,6 +43,9 @@ class MainWindow(tk.Tk):
         robot_server_frame = tk.Frame(content_frame)
         robot_server_frame.grid(row=0, column=1)
 
+        server_stop_button = tk.Button(robot_server_frame, text="Stop All Servers", command=RobotServerControl.stop_all_servers, font=("Helvetica",14, 'bold'), width=50)
+        server_stop_button.pack(padx=5, pady=5)
+
         demonstrator_server = RobotServerControl(robot_server_frame, env_cfg.robots[0])
         demonstrator_server.pack(padx=5, pady=5)
 
