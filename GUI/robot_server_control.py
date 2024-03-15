@@ -28,15 +28,15 @@ class RobotServerControl(tk.Frame):
         self.name_label = tk.Label(self, text=f"Robot Server: {self.robot_cfg.name}", font=('Helvetica',14,'bold'))
         self.name_label.grid(row=0, column=0, columnspan=4, padx=5, pady=5, sticky='ew')
         
-        self.start_button = tk.Button(self, text="Start", command=self._start_robot_server)
+        self.start_button = tk.Button(self, text="Start", command=self.start)
         self.start_button.grid(row=1, column=0, padx=5, pady=5, sticky='ew')
         self.start_button.config(state=tk.NORMAL)
 
-        self.stop_button = tk.Button(self, text="Stop", command=self._stop_robot_server)
+        self.stop_button = tk.Button(self, text="Stop", command=self.stop)
         self.stop_button.grid(row=1, column=1, padx=5, pady=5, sticky='ew')
         self.stop_button.config(state=tk.DISABLED)
 
-        self.config_button = tk.Button(self, text="Config", command=self._config_robot_server)
+        self.config_button = tk.Button(self, text="Config", command=self.config)
         self.config_button.grid(row=1, column=2, padx=5, pady=5, sticky='ew')
         self.config_button.config(state=tk.NORMAL)
 
@@ -49,7 +49,7 @@ class RobotServerControl(tk.Frame):
 
         self.process = None
 
-    def _start_robot_server(self):
+    def start(self):
         command = ["launch_robot.py", 
                    "robot_client=franka_hardware",
                    f"robot_client.executable_cfg.robot_ip={self.robot_cfg.robot_ip}",
@@ -65,7 +65,7 @@ class RobotServerControl(tk.Frame):
         self.stop_button.config(state=tk.NORMAL)
         self._read_process_output()
 
-    def _stop_robot_server(self):
+    def stop(self):
         if self.process:
             self.process.terminate()
             self.process = None
@@ -73,7 +73,7 @@ class RobotServerControl(tk.Frame):
         self.config_button.config(state=tk.NORMAL)
         self.stop_button.config(state=tk.DISABLED)
 
-    def _config_robot_server(self):
+    def config(self):
         raise NotImplementedError
 
     def _enqueue_process_output(self):

@@ -10,6 +10,12 @@ from GUI.status_log import StatusLog
 
 class LoggingControl(tk.Frame):
     def __init__(self, master, robot_interface_controls:List[RobotInterface]):
+        """Controls logging of robot data.
+
+        Args:
+            master (_type_): Parent window/frame
+            robot_interface_controls (List[RobotInterface]): robots to log data from.
+        """
         super().__init__(master)
         self.logger = logging.getLogger(__name__)
         self.data_managers:List[RobotDataManager] = []
@@ -51,6 +57,7 @@ class LoggingControl(tk.Frame):
         self.logger.addHandler(self.status_log.handler)
 
     def start(self):
+        """start logging data from the robots."""
         robots = [ric.robot_interface for ric in self.robot_interface_controls] 
         if (robots is None or 
             len(robots) == 0 
@@ -68,11 +75,13 @@ class LoggingControl(tk.Frame):
         self.logger.info("Logging started.")
 
     def split(self):
+        """split the incoming data at current time."""
         for data_manager in self.data_managers:
             data_manager.split()
         self.logger.info("Data split.")
         
     def stop(self):
+        """stop logging data from the robots."""
         for data_manager in self.data_managers:
             data_manager.stop()
             data_manager.join()
