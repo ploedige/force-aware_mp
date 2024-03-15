@@ -49,7 +49,8 @@ class ForceFeedbackTeleoperationTask(TeleoperationBaseTask):
         while not self._stop_event.is_set():
             joint_pos_demonstrator = self.demonstrator.get_joint_positions()
             self.replicant.update_desired_joint_positions(joint_pos_demonstrator)
-            current_replication_torques = self.replicant.get_robot_state().motor_torques_external
-            current_replication_torques = tensor_utils.to_tensor(current_replication_torques)
+            ### ATTENTION: motor_torques_external are exactly opposite to the expectation
+            current_replication_torques = self.replicant.get_robot_state().motor_torques_external 
+            current_replication_torques = - tensor_utils.to_tensor(current_replication_torques)#correct torque direction
             self.demonstrator.update_current_policy({"replication_torques" : current_replication_torques})
         self.logger.info("Teleoperation terminated successfully.")

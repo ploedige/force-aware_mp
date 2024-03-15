@@ -34,10 +34,12 @@ class HumanController(toco.PolicyModule):
         return self._centering_gain * centering_load
 
     def _get_assistive_torques(self, external_torques: torch.Tensor) -> torch.Tensor:
-       return -self._assistive_gain * external_torques
+       return self._assistive_gain * external_torques
 
     def forward(self, state_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
-        assistive_torques = self._get_assistive_torques(state_dict["motor_torques_external"])
+        ### ATTENTION: state_dict["motor_torques_external"] are exactly opposite to the expectation
+        motor_torques_external = -state_dict["motor_torques_external"] #correct external torques direction
+        assistive_torques = self._get_assistive_torques(motor_torques_external)
         centering_torques = self._get_centering_torques(state_dict["joint_positions"])
 
         return {"joint_torques": assistive_torques + centering_torques}

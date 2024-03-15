@@ -60,3 +60,7 @@ tkinter does not have nice fonts because of conda <br>
 conda install -c conda-forge tk=*=xft_*
 ```
 Note: in zsh the * need to be escaped
+
+### state_dict["motor_torques_external"]
+The external motor torques are given as the opposite direction of what would be intuitive.
+Specifically, applying torque in x direction returns measured external torques in -x direction.

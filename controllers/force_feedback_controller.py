@@ -30,20 +30,29 @@ class ForceFeedbackController(HumanController):
         self._force_feedback_damping_gain = force_feedback_damping_gain
         self._force_feedback = force_feedback
 
-    def _get_force_feedback_torques(self, replication_torques: torch.Tensor, joint_vel_current: torch.Tensor) -> torch.Tensor:
-        feedback_damping = self._force_feedback_damping_gain * joint_vel_current
-        boundaries = torch.abs(replication_torques)
-        feedback_damping = torch.clamp(feedback_damping, -boundaries, boundaries)
-        return replication_torques - feedback_damping
-
-
     def forward(self, state_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
-        assistive_torques = self._get_assistive_torques(state_dict["motor_torques_external"])
-        centering_torques = self._get_centering_torques(state_dict["joint_positions"])
-        # force_feedback_torques = self._get_force_feedback_torques(self.replication_torques, state_dict["joint_velocities"])
-        force_feedback_torques = self.replication_torques
+        ### ATTENTION: state_dict["motor_torques_external"] are exactly opposite to the expectation
+        motor_torques_external = -state_dict["motor_torques_external"] #correct external torques direction
+        joint_pos = state_dict["joint_positions"]
+        assistive_torques = self._get_assistive_torques(motor_torques_external)
+        centering_torques = self._get_centering_torques(joint_pos)
+        force_feedback_torques = self.replication_torques            
 
         if self._force_feedback:
-            return {"joint_torques": assistive_torques + centering_torques - force_feedback_torques}
+            return_torques = torch.zeros_like(motor_torques_external)
+            # condition = torch.abs(motor_torques_external - assistive_torques - centering_torques) >= torch.abs(force_feedback_torques)
+            # return_torques = (assistive_torques + centering_torques - force_feedback_torques) * condition
+            for idx in range(return_torques.size()[0]):
+                if motor_torques_external[idx] < 0:
+                    if force_feedback_torques[idx] < motor_torques_external[idx]:
+                        return_torques[idx] = - motor_torques_external[idx]
+                    else:
+                        return_torques[idx] = force_feedback_torques[idx]
+                else: 
+                    if force_feedback_torques[idx] > motor_torques_external[idx]:
+                        return_torques[idx] = - motor_torques_external[idx]
+                    else:
+                        return_torques[idx] = force_feedback_torques[idx]
+            return {"joint_torques": return_torques}
         else:
             return {"joint_torques": assistive_torques + centering_torques}
