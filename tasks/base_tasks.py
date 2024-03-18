@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Dict
 import threading
 import logging
+import torch
 
 from polymetis import RobotInterface
 
@@ -47,3 +48,8 @@ class TeleoperationBaseTask(BaseTask, ABC):
         for robot in self.robots:
             robot.move_to_joint_positions(base_pos)
         self.logger.info(f"Robot positions synced successfully.")
+
+class ReplayBaseTask(BaseTask, ABC):
+    def __init__(self, robots: List[RobotInterface], demonstrations: List[Dict[str, torch.Tensor]]) -> None:
+        super().__init__(robots)
+        self.demonstrations = demonstrations
