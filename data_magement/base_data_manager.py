@@ -2,7 +2,7 @@ import threading
 import logging
 import os
 import pickle
-
+from typing import List
 import abc
 
 class BaseDataManager(threading.Thread, abc.ABC):
@@ -38,3 +38,11 @@ class BaseDataManager(threading.Thread, abc.ABC):
         log_file_path = os.path.join(data_dir, f"{log_name}.pkl")
         with open(log_file_path, 'wb') as f:
             pickle.dump(data, f)
+
+    @staticmethod
+    def get_demonstrations_from_files(file_paths: List[str]):
+        demonstrations = list()
+        for file_path in file_paths:
+            with open(file_path, 'rb') as f:
+                demonstrations.append(pickle.load(f))
+        return demonstrations
