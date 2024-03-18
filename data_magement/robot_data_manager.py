@@ -24,7 +24,7 @@ class RobotDataManager(BaseDataManager):
         start_time = datetime.now()
 
         robot_interval = self.robot.get_previous_interval()
-        robot_log = self.robot._get_robot_state_log(robot_interval)
+        robot_log = self.robot.get_previous_log()
         robot_interval.start += len(robot_log)
         robot_interval.end = -1
         split_cnt = 0
@@ -50,6 +50,8 @@ class RobotDataManager(BaseDataManager):
                     current_split += new_data
                     log_name = f"{start_time.strftime('%Y-%m-%d_%H-%M-%S')}_{self.log_info}_SPLIT_{split_cnt}"
                     self._store_data(current_split, log_name)
+            
+            time.sleep(0.1)
     
         self._stop_event.clear()
         current_split += self.robot._get_robot_state_log(robot_interval)
