@@ -1,3 +1,4 @@
+import os
 from omegaconf import DictConfig
 from tkinter import ttk
 from typing import Dict, List
@@ -5,11 +6,11 @@ import inspect
 import logging
 import pkgutil
 import tkinter as tk
-
-from polymetis import RobotInterface
+from tkinter import filedialog
 
 import tasks
-from tasks.base_tasks import BaseTask
+from tasks.base_tasks import BaseTask, ReplayBaseTask
+from data_magement.base_data_manager import BaseDataManager
 from GUI.robot_interface_control import RobotInterfaceControl
 from GUI.status_log import StatusLog
 
@@ -67,7 +68,16 @@ class TaskControl(tk.Frame):
             return
         selected_task = self.task_selection.get()
         task_type = self._tasks[selected_task]
-        self._current_task = task_type(robots)
+        if issubclass(task_type, ReplayBaseTask):
+            demonstration_files = filedialog.askopenfilenames(
+                title="Select demonstration files",
+                filetypes=[("Pickle files", "*.pkl")],
+                initialdir=os.path.join(os.path.dirname(__file__), "../data_magement/data")
+            )
+            demonstrations = BaseDataManager.get_demonstrations_from_files(demonstration_files)
+            self._current_task = task_type(robots, demonstrations)
+        else:
+            self._current_task = task_type(robots)
         self._current_task.start()
         self.start_button.config(state=tk.DISABLED)
         self.config_button.config(state=tk.DISABLED)
