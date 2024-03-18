@@ -10,8 +10,12 @@ class BaseDataManager(threading.Thread, abc.ABC):
         """Base class for data management.
 
         Args:
-            log_info (str, optional): Information about the data to be logged. Defaults to ''.
-            store_freq (float, optional): Frequency in which to write the data to the log. All data will always be logged. Executes as fast-as-possible if None. Defaults to None.
+            log_info (str, optional):       Information about the data to be logged. Defaults to ''.
+            store_freq (float, optional):   Frequency in Hz in which to write the data to the log. 
+                                            All data will always be logged. 
+                                            Executes only after "Stop" or "Split" event if None. 
+                                            Recommended to keep frequency low to avoid performance issues.
+                                            Defaults to None.
         """
         super().__init__()
         self.logger = logging.Logger(__name__)
