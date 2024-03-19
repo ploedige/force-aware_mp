@@ -37,10 +37,12 @@ class RobotDataManager(BaseDataManager):
 
         stop_update_event = threading.Event()
         def _update_queue():
+            step = 0
             while True:
                 for robot_state in stream:
                     if not stop_update_event.is_set():
-                        if self.step % self.downsampling_ratio == 0:
+                        step += 1
+                        if step % self.downsampling_ratio == 0:
                             current_split.put(robot_state)
                     else:
                         stop_update_event.clear()
