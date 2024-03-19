@@ -18,8 +18,7 @@ class TorqueTrajectoryExecutor(toco.PolicyModule):
 
         self.joint_torque_trajectory = to_tensor(stack_trajectory(joint_torque_trajectory))
 
-        assert self.joint_pos_trajectory.shape == self.joint_torque_trajectory.shape
-
+        self.N = self.joint_torque_trajectory.size(0)
         # Initialize step count
         self.i = 0
 
