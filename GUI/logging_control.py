@@ -65,8 +65,10 @@ class LoggingControl(tk.Frame):
             self.logger.error("Robot interfaces not initialized.")
             return
         if len(self.data_managers) == 0:
+            robot_cnt = 0
             for robot in robots:
-                data_manager = RobotDataManager(robot,self.log_info_input.get())
+                data_manager = RobotDataManager(robot, log_info=f"{self.log_info_input.get()} - Robot {robot_cnt}")
+                robot_cnt += 1
                 self.data_managers.append(data_manager)
                 data_manager.start()
         self.start_button.config(state=tk.DISABLED)
