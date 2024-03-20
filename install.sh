@@ -66,6 +66,14 @@ echo "##############################"
 echo Installing Tk with truetype support...
 mamba install -c conda-forge tk=*=xft_* -y
 
+############ Jupyter Notebook ############
+# enable jupyter notebook
+echo
+echo "##############################"
+echo Installing Jupyter Notebook...
+mamba install -c conda-forge jupyter -y
+mamba install -c conda-forge matplotlib -y
+
 echo
 echo
 echo Successfully installed.
