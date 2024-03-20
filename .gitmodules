@@ -1,6 +1,3 @@
-[submodule "monometis"]
-	path = monometis
-	url = git@github.com:ploedige/monometis.git
 [submodule "MP_PyTorch"]
 	path = MP_PyTorch
 	url = git@github.com:ploedige/MP_PyTorch.git
@@ -13,3 +10,6 @@
 [submodule "data"]
 	path = data_magement/data
 	url = git@github.com:ploedige/fam_data.git
+[submodule "polymetis"]
+	path = polymetis
+	url = git@github.com:intuitive-robots/irl_polymetis.git

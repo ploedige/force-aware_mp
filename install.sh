@@ -7,7 +7,7 @@ read envname
 echo
 echo "##############################"
 echo Creating new conda environment $envname...
-cd monometis
+cd polymetis
 mamba env create -n $envname -f polymetis/environment_cpu.yml -y
 eval "$(conda shell.bash hook)"
 conda activate $envname
@@ -21,7 +21,7 @@ then
     exit 1
 fi
 
-############ Polymetis (Monometis) Installation ############
+############ Polymetis Installation ############
 echo
 echo "##############################"
 echo Preparing Polymetis Installation...
