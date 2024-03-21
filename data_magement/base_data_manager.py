@@ -41,8 +41,9 @@ class BaseDataManager(threading.Thread, abc.ABC):
 
     @staticmethod
     def get_demonstrations_from_files(file_paths: List[str]):
-        demonstrations = list()
+        demonstrations = dict()
         for file_path in file_paths:
             with open(file_path, 'rb') as f:
-                demonstrations.append(pickle.load(f))
+                demonstration = pickle.load(f)
+            demonstrations[file_path] = demonstration
         return demonstrations
