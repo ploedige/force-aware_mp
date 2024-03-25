@@ -10,8 +10,11 @@ from torchcontrol.utils.tensor_utils import to_tensor
 class MPTorqueReplay(ReplayBaseTask):
     def __init__(self, robots, demonstrations):
         super().__init__(robots, demonstrations)
-
         self.torque_trajectory = self._create_torques_from_mp(demonstrations)
+        self.pos_trajectory = [tp.joint_positions for tp in self.demonstration]
+        self.pos_trajectory = [to_tensor(tp) for tp in self.pos_trajectory]
+        for robot in self.robots:
+            robot.move_to_joint_positions(self.pos_trajectory[0])
 
     def _create_torques_from_mp(self, demonstrations):
         demonstration = demonstrations[0]
