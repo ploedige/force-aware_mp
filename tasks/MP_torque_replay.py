@@ -28,7 +28,7 @@ class MPTorqueReplay(ReplayBaseTask):
         mp = MPFactory.init_mp(mp_type='prodmp', num_dof=7)
         mp_dict = mp.learn_mp_params_from_trajs(times, torques)
 
-        torques = mp.get_trajs(get_vel=False)
+        torques = mp.get_trajs()['pos']
         return torques
 
     def run(self):
