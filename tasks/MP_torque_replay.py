@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from mp_pytorch.mp import MPFactory
 import torchcontrol as toco
@@ -18,12 +18,15 @@ class MPTorqueReplay(ReplayBaseTask):
 
     def _create_torques_from_mp(self, demonstrations):
         demonstration = demonstrations[0]
+        demonstration = demonstration[::1000]
+        start_time = datetime.fromtimestamp(demonstration[0].timestamp.seconds + demonstration[0].timestamp.nanos * 1e-9)
         times = [datetime.fromtimestamp(tp.timestamp.seconds + tp.timestamp.nanos * 1e-9) for tp in demonstration]
+        times = [(t - start_time).total_seconds() for t in times]
         times = toco.utils.to_tensor(times)
-        torques = [tp.joint_torques_calculated for tp in demonstration]
+        torques = [tp.joint_torques_computed for tp in demonstration]
         torques = toco.utils.to_tensor(torques)
 
-        mp = MPFactory.init_mp(mp_type='dmp', num_dof=7)
+        mp = MPFactory.init_mp(mp_type='prodmp', num_dof=7)
         mp_dict = mp.learn_mp_params_from_trajs(times, torques)
 
         torques, _ = mp.get_trajs()
