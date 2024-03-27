@@ -5,7 +5,7 @@ from typing import List
 
 from polymetis import RobotInterface
 
-from data_magement.robot_data_manager import RobotDataManager
+from data_management.robot_data_manager import RobotDataManager
 from GUI.status_log import StatusLog
 
 class LoggingControl(tk.Frame):

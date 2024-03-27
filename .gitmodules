@@ -8,7 +8,7 @@
 	path = related_repos/SimulationFrameworkPublic
 	url = https://github.com/ALRhub/SimulationFrameworkPublic.git
 [submodule "data"]
-	path = data_magement/data
+	path = data_management/data
 	url = git@github.com:ploedige/fam_data.git
 [submodule "polymetis"]
 	path = polymetis

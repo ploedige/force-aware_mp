@@ -10,7 +10,7 @@ from tkinter import filedialog
 
 import tasks
 from tasks.base_tasks import BaseTask, ReplayBaseTask
-from data_magement.base_data_manager import BaseDataManager
+from data_management.base_data_manager import BaseDataManager
 from GUI.robot_interface_control import RobotInterfaceControl
 from GUI.status_log import StatusLog
 
@@ -72,7 +72,7 @@ class TaskControl(tk.Frame):
             demonstration_files = filedialog.askopenfilenames(
                 title="Select demonstration files",
                 filetypes=[("Pickle files", "*.pkl")],
-                initialdir=os.path.join(os.path.dirname(__file__), "../data_magement/data")
+                initialdir=os.path.join(os.path.dirname(__file__), "../data_management/data")
             )
             demonstrations = BaseDataManager.get_demonstrations_from_files(demonstration_files)
             self._current_task = task_type(robots, demonstrations)

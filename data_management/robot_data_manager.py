@@ -7,7 +7,7 @@ import pickle
 
 from polymetis import RobotInterface
 from polymetis_pb2 import Empty
-from data_magement.base_data_manager import BaseDataManager
+from data_management.base_data_manager import BaseDataManager
 
 class RobotDataManager(BaseDataManager):
     def __init__(self, robot: RobotInterface, log_info:str = '', store_freq:float = None, downsamling_ratio:int = 1):
