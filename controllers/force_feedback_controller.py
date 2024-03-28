@@ -40,19 +40,16 @@ class ForceFeedbackController(HumanController):
 
         if self._force_feedback:
             return_torques = torch.zeros_like(motor_torques_external)
-            # condition = torch.abs(motor_torques_external - assistive_torques - centering_torques) >= torch.abs(force_feedback_torques)
-            # return_torques = (assistive_torques + centering_torques - force_feedback_torques) * condition
             for idx in range(return_torques.size()[0]):
-                if motor_torques_external[idx] < 0:
-                    if force_feedback_torques[idx] < motor_torques_external[idx]:
-                        return_torques[idx] = - motor_torques_external[idx]
+                demonstrator_torque = motor_torques_external[idx]
+                feedback_torque = force_feedback_torques[idx]
+                if demonstrator_torque * feedback_torque >= 0:
+                    return_torques[idx] = 0
+                else:
+                    if abs(demonstrator_torque) <= abs(feedback_torque):
+                        return_torques[idx] = -demonstrator_torque
                     else:
-                        return_torques[idx] = force_feedback_torques[idx]
-                else: 
-                    if force_feedback_torques[idx] > motor_torques_external[idx]:
-                        return_torques[idx] = - motor_torques_external[idx]
-                    else:
-                        return_torques[idx] = force_feedback_torques[idx]
+                        return_torques[idx] = feedback_torque
             return {"joint_torques": return_torques}
         else:
             return {"joint_torques": assistive_torques + centering_torques}
